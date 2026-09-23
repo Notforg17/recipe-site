@@ -1,0 +1,158 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  padding: 30px 15px;
+  color: #333;
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: 30px;
+  text-align: center;
+  margin-bottom: 8px;
+  color: #4a2c1a;
+}
+
+.subtitle {
+  text-align: center;
+  color: #7a5c4a;
+  margin-bottom: 25px;
+}
+
+.search-box {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+#ingredientsInput {
+  flex: 1;
+  padding: 14px;
+  border-radius: 12px;
+  border: 2px solid #fff;
+  font-size: 16px;
+  outline: none;
+  background: #fff;
+  transition: border 0.2s;
+}
+
+#ingredientsInput:focus {
+  border-color: #fcb69f;
+}
+
+#searchBtn {
+  padding: 14px 22px;
+  border-radius: 12px;
+  border: none;
+  background: #4a2c1a;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+#searchBtn:hover {
+  transform: scale(1.03);
+}
+
+.quick-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 25px;
+  font-size: 14px;
+  color: #7a5c4a;
+}
+
+.tag {
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid #7a5c4a;
+  background: transparent;
+  color: #7a5c4a;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.15s;
+}
+
+.tag:hover {
+  background: #7a5c4a;
+  color: #fff;
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.recipe-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.recipe-card h3 {
+  color: #4a2c1a;
+  margin-bottom: 6px;
+  font-size: 20px;
+}
+
+.recipe-time {
+  display: inline-block;
+  background: #ffecd2;
+  color: #4a2c1a;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.recipe-card ol {
+  padding-left: 20px;
+  color: #555;
+  line-height: 1.6;
+}
+
+.recipe-card ol li {
+  margin-bottom: 4px;
+}
+
+.missing {
+  background: #fff3cd;
+  color: #856404;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: #7a5c4a;
+  font-size: 16px;
+}
+
+.match-badge {
+  float: right;
+  background: #4caf50;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Что приготовить? — Рецепты из того, что есть</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🍳 Что приготовить?</h1>
+    <p class="subtitle">Введи продукты, которые есть дома — покажем, что можно сделать</p>
+
+    <div class="search-box">
+      <input 
+        type="text" 
+        id="ingredientsInput" 
+        placeholder="яйца, молоко, мука, сыр..."
+      >
+      <button id="searchBtn">Найти рецепты</button>
+    </div>
+
+    <div class="quick-tags">
+      <span>Быстрые примеры:</span>
+      <button class="tag" data-items="яйца, молоко, мука">яйца, молоко, мука</button>
+      <button class="tag" data-items="макароны, сыр, масло">макароны, сыр</button>
+      <button class="tag" data-items="картошка, лук, масло">картошка, лук</button>
+    </div>
+
+    <div id="results" class="results"></div>
+  </div>
+
+  <script src="recipes.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
