@@ -23,7 +23,6 @@ function parseInput(text) {
 }
 
 function getMinutes(timeStr) {
-  // "1 час 30 минут" → 90
   let total = 0;
   const hours = timeStr.match(/(\d+)\s*час/);
   const mins = timeStr.match(/(\d+)\s*мин/);
@@ -36,6 +35,18 @@ function matchesFilter(recipe) {
   if (currentFilter === 'all') return true;
   if (currentFilter === 'быстрое') return getMinutes(recipe.time) <= 20;
   return recipe.category === currentFilter;
+}
+
+// 🆕 НОВОЕ: ищем рецепт по названию
+function findByName(query) {
+  const q = query.toLowerCase().trim();
+  if (q.length < 2) return [];
+
+  const matches = RECIPES.filter(r =>
+    r.name.toLowerCase().includes(q)
+  );
+
+  return matches.map(r => ({ ...r, matchPercent: 1, missing: [], byName: true }));
 }
 
 function findRecipes(userItems) {
@@ -68,7 +79,7 @@ function renderResults(recipes) {
     resultsDiv.innerHTML = `
       <div class="empty">
         😔 Ничего не нашли.<br>
-        Попробуй добавить больше продуктов или сменить фильтр.
+        Попробуй другие продукты или название блюда.
       </div>`;
     return;
   }
@@ -83,15 +94,20 @@ function createCard(recipe) {
   card.className = 'recipe-card';
 
   const matchPercent = Math.round((recipe.matchPercent || 1) * 100);
-  const badgeColor = !recipe.missing || recipe.missing.length === 0 ? '#4caf50' : '#ff9800';
 
   let html = '';
-  if (recipe.matchPercent !== undefined) {
+
+  // Показываем бейдж только если ищем по продуктам
+  if (!recipe.byName && recipe.matchPercent !== undefined) {
+    const badgeColor = !recipe.missing || recipe.missing.length === 0 ? '#4caf50' : '#ff9800';
     html += `
       <span class="match-badge" style="background:${badgeColor}">
         ${recipe.missing.length === 0 ? '✓ Всё есть' : `${matchPercent}%`}
       </span>`;
+  } else if (recipe.byName) {
+    html += `<span class="match-badge" style="background:#667eea">🔍 По названию</span>`;
   }
+
   html += `<h3>${recipe.name}</h3>`;
   html += `<div class="recipe-time">⏱ ${recipe.time}</div>`;
 
@@ -123,22 +139,41 @@ function copyRecipe(recipe, btn) {
   });
 }
 
+// 🆕 Умный поиск: сначала по названию, потом по продуктам
 function search() {
   const text = input.value.trim();
 
   if (!text && currentFilter === 'all') {
-    resultsDiv.innerHTML = `<div class="empty">Введи хотя бы один продукт 🍎<br>Или выбери фильтр и нажми «Случайный рецепт»</div>`;
+    resultsDiv.innerHTML = `<div class="empty">Введи продукты или название блюда 🍎<br>Например: «яйца, молоко» или «борщ»</div>`;
     return;
   }
 
-  const userItems = text ? parseInput(text) : [];
-  
-  // Если есть фильтр но нет ингредиентов — показываем все рецепты фильтра
-  const recipes = userItems.length > 0 
-    ? findRecipes(userItems)
-    : RECIPES.filter(matchesFilter).map(r => ({ ...r, matchPercent: 1, missing: [] }));
+  // Сначала пробуем найти по названию
+  if (text) {
+    const byName = findByName(text);
+    if (byName.length > 0) {
+      renderResults(byName);
+      return;
+    }
+  }
 
-  renderResults(recipes);
+  // Если по названию не нашли — ищем по продуктам
+  if (text) {
+    const userItems = parseInput(text);
+    if (userItems.length > 0) {
+      const recipes = findRecipes(userItems);
+      if (recipes.length > 0) {
+        renderResults(recipes);
+        return;
+      }
+    }
+  }
+
+  // Если ничего не нашли — показываем по фильтру
+  const fallback = RECIPES.filter(matchesFilter).map(r => ({
+    ...r, matchPercent: 1, missing: []
+  }));
+  renderResults(fallback);
 }
 
 function showRandom() {
