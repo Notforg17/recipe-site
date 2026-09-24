@@ -17,14 +17,28 @@
         id="ingredientsInput" 
         placeholder="яйца, молоко, мука, сыр..."
       >
-      <button id="searchBtn">Найти рецепты</button>
+      <button id="searchBtn">Найти</button>
     </div>
 
     <div class="quick-tags">
-      <span>Быстрые примеры:</span>
+      <span>Примеры:</span>
       <button class="tag" data-items="яйца, молоко, мука">яйца, молоко, мука</button>
       <button class="tag" data-items="макароны, сыр, масло">макароны, сыр</button>
       <button class="tag" data-items="картошка, лук, масло">картошка, лук</button>
+    </div>
+
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">🍽 Все</button>
+      <button class="filter-btn" data-filter="завтрак">🍳 Завтрак</button>
+      <button class="filter-btn" data-filter="суп">🍲 Супы</button>
+      <button class="filter-btn" data-filter="второе">🍝 Второе</button>
+      <button class="filter-btn" data-filter="салат">🥗 Салаты</button>
+      <button class="filter-btn" data-filter="десерт">🍰 Десерты</button>
+      <button class="filter-btn" data-filter="быстрое">⏱ Быстрые</button>
+    </div>
+
+    <div class="action-row">
+      <button id="randomBtn" class="random-btn">🎲 Случайный рецепт</button>
     </div>
 
     <div id="results" class="results"></div>
