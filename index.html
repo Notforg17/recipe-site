@@ -4,33 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Что приготовить? — Рецепты из того, что есть</title>
-<!-- Yandex.Metrika counter -->
-<script type="text/javascript">
-    (function(m,e,t,r,i,k,a){
-        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-        m[i].l=1*new Date();
-        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=113004758', 'ym');
-
-    ym(113004758, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
-</script>
-<noscript><div><img src="https://mc.yandex.ru/watch/113004758" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-<!-- /Yandex.Metrika counter -->
+  
+  <!-- Красивые шрифты -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <h1>🍳 Что приготовить?</h1>
-    <p class="subtitle">Введи продукты, которые есть дома — покажем, что можно сделать</p>
+    <div class="header">
+      <h1>🍳 Что приготовить?</h1>
+      <button id="themeToggle" class="theme-toggle" title="Сменить тему">🌙</button>
+    </div>
+    <p class="subtitle">Введи продукты или название блюда — покажем рецепты</p>
 
     <div class="search-box">
       <input 
         type="text" 
         id="ingredientsInput" 
-        placeholder="яйца, молоко, мука, сыр..."
+        placeholder="яйца, молоко... или борщ"
       >
-      <button id="searchBtn">Найти</button>
+      <button id="searchBtn">🔍 Найти</button>
     </div>
 
     <div class="quick-tags">
@@ -38,6 +34,7 @@
       <button class="tag" data-items="яйца, молоко, мука">яйца, молоко, мука</button>
       <button class="tag" data-items="макароны, сыр, масло">макароны, сыр</button>
       <button class="tag" data-items="картошка, лук, масло">картошка, лук</button>
+      <button class="tag" data-items="борщ">борщ</button>
     </div>
 
     <div class="filters">
@@ -51,10 +48,24 @@
     </div>
 
     <div class="action-row">
-      <button id="randomBtn" class="random-btn">🎲 Случайный рецепт</button>
+      <button id="randomBtn" class="random-btn">🎲 Случайный</button>
+      <button id="favoritesBtn" class="favorites-btn">❤️ Избранное (<span id="favCount">0</span>)</button>
+      <button id="shoppingBtn" class="shopping-btn">🛒 Покупки (<span id="shopCount">0</span>)</button>
     </div>
 
     <div id="results" class="results"></div>
+  </div>
+
+  <!-- Модальное окно списка покупок -->
+  <div id="shoppingModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>🛒 Список покупок</h2>
+        <button id="closeShopping" class="close-btn">✕</button>
+      </div>
+      <div id="shoppingList" class="shopping-list"></div>
+      <button id="clearShopping" class="clear-btn">🗑 Очистить всё</button>
+    </div>
   </div>
 
   <script src="recipes.js"></script>

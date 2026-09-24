@@ -4,9 +4,165 @@ const resultsDiv = document.getElementById('results');
 const tags = document.querySelectorAll('.tag');
 const filterBtns = document.querySelectorAll('.filter-btn');
 const randomBtn = document.getElementById('randomBtn');
+const favoritesBtn = document.getElementById('favoritesBtn');
+const favCountSpan = document.getElementById('favCount');
+const shoppingBtn = document.getElementById('shoppingBtn');
+const shopCountSpan = document.getElementById('shopCount');
+const shoppingModal = document.getElementById('shoppingModal');
+const shoppingListDiv = document.getElementById('shoppingList');
+const closeShopping = document.getElementById('closeShopping');
+const clearShopping = document.getElementById('clearShopping');
+const themeToggle = document.getElementById('themeToggle');
 
 let currentFilter = 'all';
 
+// ===== ТЁМНАЯ ТЕМА =====
+function loadTheme() {
+  const saved = localStorage.getItem('recipeTheme');
+  if (saved === 'dark') {
+    document.body.classList.add('dark');
+    themeToggle.textContent = '☀️';
+  } else {
+    themeToggle.textContent = '🌙';
+  }
+}
+
+function toggleTheme() {
+  document.body.classList.toggle('dark');
+  const isDark = document.body.classList.contains('dark');
+  themeToggle.textContent = isDark ? '☀️' : '🌙';
+  localStorage.setItem('recipeTheme', isDark ? 'dark' : 'light');
+}
+
+// ===== ЭМОДЗИ ПО КАТЕГОРИИ =====
+function getCategoryEmoji(category) {
+  const emojis = {
+    'завтрак': '🍳',
+    'суп': '🍲',
+    'второе': '🍝',
+    'салат': '🥗',
+    'десерт': '🍰'
+  };
+  return emojis[category] || '🍽';
+}
+
+// ===== ИЗБРАННОЕ =====
+function getFavorites() {
+  try {
+    return JSON.parse(localStorage.getItem('recipeFavorites') || '[]');
+  } catch {
+    return [];
+  }
+}
+
+function saveFavorites(favs) {
+  localStorage.setItem('recipeFavorites', JSON.stringify(favs));
+  updateFavCount();
+}
+
+function isFavorite(name) {
+  return getFavorites().includes(name);
+}
+
+function toggleFavorite(name) {
+  let favs = getFavorites();
+  if (favs.includes(name)) {
+    favs = favs.filter(f => f !== name);
+  } else {
+    favs.push(name);
+  }
+  saveFavorites(favs);
+}
+
+function updateFavCount() {
+  favCountSpan.textContent = getFavorites().length;
+}
+
+// ===== СПИСОК ПОКУПОК =====
+function getShopping() {
+  try {
+    return JSON.parse(localStorage.getItem('recipeShopping') || '[]');
+  } catch {
+    return [];
+  }
+}
+
+function saveShopping(items) {
+  localStorage.setItem('recipeShopping', JSON.stringify(items));
+  updateShopCount();
+}
+
+function addToShopping(items) {
+  const current = getShopping();
+  items.forEach(item => {
+    const normalized = item.toLowerCase().trim();
+    if (!current.some(i => i.name.toLowerCase() === normalized)) {
+      current.push({ name: item, done: false });
+    }
+  });
+  saveShopping(current);
+}
+
+function toggleShoppingItem(index) {
+  const items = getShopping();
+  items[index].done = !items[index].done;
+  saveShopping(items);
+  renderShoppingList();
+}
+
+function removeShoppingItem(index) {
+  const items = getShopping();
+  items.splice(index, 1);
+  saveShopping(items);
+  renderShoppingList();
+}
+
+function clearAllShopping() {
+  if (confirm('Очистить весь список покупок?')) {
+    saveShopping([]);
+    renderShoppingList();
+  }
+}
+
+function updateShopCount() {
+  shopCountSpan.textContent = getShopping().length;
+}
+
+function renderShoppingList() {
+  const items = getShopping();
+
+  if (items.length === 0) {
+    shoppingListDiv.innerHTML = `<div class="empty" style="padding: 20px; font-size: 15px;">Список пуст.<br>Добавляй ингредиенты кнопкой 🛒 на рецептах.</div>`;
+    return;
+  }
+
+  shoppingListDiv.innerHTML = '';
+
+  items.forEach((item, index) => {
+    const div = document.createElement('div');
+    div.className = 'shopping-item' + (item.done ? ' done' : '');
+
+    div.innerHTML = `
+      <input type="checkbox" ${item.done ? 'checked' : ''}>
+      <span class="item-name">${item.name}</span>
+      <button class="remove-item">✕</button>
+    `;
+
+    div.querySelector('input').addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleShoppingItem(index);
+    });
+
+    div.querySelector('.remove-item').addEventListener('click', (e) => {
+      e.stopPropagation();
+      removeShoppingItem(index);
+    });
+
+    shoppingListDiv.appendChild(div);
+  });
+}
+
+// ===== ПОИСК =====
 function normalize(word) {
   return word
     .toLowerCase()
@@ -37,16 +193,13 @@ function matchesFilter(recipe) {
   return recipe.category === currentFilter;
 }
 
-// 🆕 НОВОЕ: ищем рецепт по названию
 function findByName(query) {
   const q = query.toLowerCase().trim();
   if (q.length < 2) return [];
 
-  const matches = RECIPES.filter(r =>
-    r.name.toLowerCase().includes(q)
-  );
-
-  return matches.map(r => ({ ...r, matchPercent: 1, missing: [], byName: true }));
+  return RECIPES
+    .filter(r => r.name.toLowerCase().includes(q))
+    .map(r => ({ ...r, matchPercent: 1, missing: [], byName: true }));
 }
 
 function findRecipes(userItems) {
@@ -72,6 +225,7 @@ function findRecipes(userItems) {
   return found;
 }
 
+// ===== ОТРИСОВКА =====
 function renderResults(recipes) {
   resultsDiv.innerHTML = '';
 
@@ -84,20 +238,22 @@ function renderResults(recipes) {
     return;
   }
 
-  recipes.forEach(recipe => {
-    resultsDiv.appendChild(createCard(recipe));
+  recipes.forEach((recipe, i) => {
+    const card = createCard(recipe);
+    card.style.animationDelay = `${i * 0.05}s`;
+    resultsDiv.appendChild(card);
   });
 }
 
 function createCard(recipe) {
   const card = document.createElement('div');
   card.className = 'recipe-card';
+  if (recipe.category) card.dataset.category = recipe.category;
 
   const matchPercent = Math.round((recipe.matchPercent || 1) * 100);
 
   let html = '';
 
-  // Показываем бейдж только если ищем по продуктам
   if (!recipe.byName && recipe.matchPercent !== undefined) {
     const badgeColor = !recipe.missing || recipe.missing.length === 0 ? '#4caf50' : '#ff9800';
     html += `
@@ -108,7 +264,8 @@ function createCard(recipe) {
     html += `<span class="match-badge" style="background:#667eea">🔍 По названию</span>`;
   }
 
-  html += `<h3>${recipe.name}</h3>`;
+  const emoji = getCategoryEmoji(recipe.category);
+  html += `<h3>${emoji} ${recipe.name}</h3>`;
   html += `<div class="recipe-time">⏱ ${recipe.time}</div>`;
 
   if (recipe.missing && recipe.missing.length > 0) {
@@ -116,12 +273,44 @@ function createCard(recipe) {
   }
 
   html += `<ol>${recipe.steps.map(s => `<li>${s}</li>`).join('')}</ol>`;
-  html += `<button class="copy-btn" data-recipe="${recipe.name}">📋 Скопировать</button>`;
+
+  const favActive = isFavorite(recipe.name) ? 'active' : '';
+  const favText = isFavorite(recipe.name) ? '❤️ В избранном' : '🤍 В избранное';
+
+  const missingForShopping = recipe.missing && recipe.missing.length > 0
+    ? recipe.missing.join(',')
+    : recipe.ingredients.join(',');
+
+  html += `
+    <div class="card-actions">
+      <button class="copy-btn" data-recipe="${recipe.name}">📋 Скопировать</button>
+      <button class="fav-btn ${favActive}" data-fav="${recipe.name}">${favText}</button>
+      <button class="shop-btn" data-shop="${missingForShopping}">🛒 В покупки</button>
+    </div>
+  `;
 
   card.innerHTML = html;
 
-  const copyBtn = card.querySelector('.copy-btn');
-  copyBtn.addEventListener('click', () => copyRecipe(recipe, copyBtn));
+  card.querySelector('.copy-btn').addEventListener('click', (e) => {
+    copyRecipe(recipe, e.target);
+  });
+
+  card.querySelector('.fav-btn').addEventListener('click', (e) => {
+    toggleFavorite(recipe.name);
+    const btn = e.target;
+    const active = isFavorite(recipe.name);
+    btn.classList.toggle('active', active);
+    btn.textContent = active ? '❤️ В избранном' : '🤍 В избранное';
+  });
+
+  card.querySelector('.shop-btn').addEventListener('click', (e) => {
+    const items = e.target.dataset.shop.split(',').map(s => s.trim()).filter(Boolean);
+    addToShopping(items);
+    e.target.textContent = '✓ Добавлено!';
+    setTimeout(() => {
+      e.target.textContent = '🛒 В покупки';
+    }, 1500);
+  });
 
   return card;
 }
@@ -139,7 +328,7 @@ function copyRecipe(recipe, btn) {
   });
 }
 
-// 🆕 Умный поиск: сначала по названию, потом по продуктам
+// ===== ЛОГИКА =====
 function search() {
   const text = input.value.trim();
 
@@ -148,7 +337,6 @@ function search() {
     return;
   }
 
-  // Сначала пробуем найти по названию
   if (text) {
     const byName = findByName(text);
     if (byName.length > 0) {
@@ -157,7 +345,6 @@ function search() {
     }
   }
 
-  // Если по названию не нашли — ищем по продуктам
   if (text) {
     const userItems = parseInput(text);
     if (userItems.length > 0) {
@@ -169,7 +356,6 @@ function search() {
     }
   }
 
-  // Если ничего не нашли — показываем по фильтру
   const fallback = RECIPES.filter(matchesFilter).map(r => ({
     ...r, matchPercent: 1, missing: []
   }));
@@ -186,6 +372,31 @@ function showRandom() {
   renderResults([{ ...random, matchPercent: 1, missing: [] }]);
 }
 
+function showFavorites() {
+  const favs = getFavorites();
+
+  if (favs.length === 0) {
+    resultsDiv.innerHTML = `<div class="empty">❤️ У тебя пока нет избранных рецептов.<br><br>Нажми «🤍 В избранное» на любом рецепте.</div>`;
+    return;
+  }
+
+  const recipes = RECIPES
+    .filter(r => favs.includes(r.name))
+    .map(r => ({ ...r, matchPercent: 1, missing: [] }));
+
+  renderResults(recipes);
+}
+
+function openShopping() {
+  renderShoppingList();
+  shoppingModal.classList.add('open');
+}
+
+function closeShoppingModal() {
+  shoppingModal.classList.remove('open');
+}
+
+// ===== СОБЫТИЯ =====
 searchBtn.addEventListener('click', search);
 
 input.addEventListener('keypress', (e) => {
@@ -209,3 +420,17 @@ filterBtns.forEach(btn => {
 });
 
 randomBtn.addEventListener('click', showRandom);
+favoritesBtn.addEventListener('click', showFavorites);
+shoppingBtn.addEventListener('click', openShopping);
+closeShopping.addEventListener('click', closeShoppingModal);
+clearShopping.addEventListener('click', clearAllShopping);
+themeToggle.addEventListener('click', toggleTheme);
+
+shoppingModal.addEventListener('click', (e) => {
+  if (e.target === shoppingModal) closeShoppingModal();
+});
+
+// Инициализация
+loadTheme();
+updateFavCount();
+updateShopCount();
