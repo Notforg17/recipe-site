@@ -16,6 +16,15 @@ const themeToggle = document.getElementById('themeToggle');
 
 let currentFilter = 'all';
 
+// ===== PWA: Регистрация Service Worker =====
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js')
+      .then((reg) => console.log('✅ Service Worker зарегистрирован:', reg.scope))
+      .catch((err) => console.log('❌ Ошибка Service Worker:', err));
+  });
+}
+
 // ===== ТЁМНАЯ ТЕМА =====
 function loadTheme() {
   const saved = localStorage.getItem('recipeTheme');
