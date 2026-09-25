@@ -674,6 +674,25 @@ body.dark .missing { background: rgba(255, 209, 102, 0.1); color: #ffd166; }
   transition: all 0.2s;
   box-shadow: 0 4px 12px rgba(255, 107, 53, 0.35);
   flex-shrink: 0;
+} 
+
+.ai-photo-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  border: 1.5px solid var(--card-border);
+  background: var(--card-bg);
+  color: var(--text-main);
+  font-size: 22px;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.ai-photo-btn:hover {
+  transform: scale(1.05);
+  border-color: var(--accent);
+  background: var(--hover-bg);
 }
 
 .ai-send-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5); }

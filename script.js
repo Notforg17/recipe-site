@@ -14,7 +14,6 @@ const closeShopping = document.getElementById('closeShopping');
 const clearShopping = document.getElementById('clearShopping');
 const themeToggle = document.getElementById('themeToggle');
 
-// 🤖 AI
 const aiBtn = document.getElementById('aiBtn');
 const aiModal = document.getElementById('aiModal');
 const closeAi = document.getElementById('closeAi');
@@ -26,7 +25,6 @@ const WORKER_URL = 'https://lingering-tooth-00dc.jaroslav-dg.workers.dev/';
 
 let currentFilter = 'all';
 
-// ===== PWA =====
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('service-worker.js')
@@ -35,7 +33,6 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// ===== ТЁМНАЯ ТЕМА =====
 function loadTheme() {
   const saved = localStorage.getItem('recipeTheme');
   if (saved === 'dark') {
@@ -53,7 +50,6 @@ function toggleTheme() {
   localStorage.setItem('recipeTheme', isDark ? 'dark' : 'light');
 }
 
-// ===== ЭМОДЗИ =====
 function getCategoryEmoji(category) {
   const emojis = {
     'завтрак': '🍳', 'суп': '🍲', 'второе': '🍝',
@@ -62,7 +58,6 @@ function getCategoryEmoji(category) {
   return emojis[category] || '🍽';
 }
 
-// ===== ИЗБРАННОЕ =====
 function getFavorites() {
   try { return JSON.parse(localStorage.getItem('recipeFavorites') || '[]'); }
   catch { return []; }
@@ -84,7 +79,6 @@ function toggleFavorite(name) {
 
 function updateFavCount() { favCountSpan.textContent = getFavorites().length; }
 
-// ===== ПОКУПКИ =====
 function getShopping() {
   try { return JSON.parse(localStorage.getItem('recipeShopping') || '[]'); }
   catch { return []; }
@@ -155,8 +149,6 @@ function renderShoppingList() {
     shoppingListDiv.appendChild(div);
   });
 }
-
-// ===== ПОИСК =====
 function normalize(word) {
   return word.toLowerCase().trim().replace(/[.,!?]/g, '')
     .replace(/(ы|и|а|я|у|ю|е|о|ей|ов|ам|ами|ах)$/i, '');
@@ -202,7 +194,6 @@ function findRecipes(userItems) {
   return found;
 }
 
-// ===== ОТРИСОВКА =====
 function renderResults(recipes) {
   resultsDiv.innerHTML = '';
   if (recipes.length === 0) {
@@ -287,7 +278,6 @@ function copyRecipe(recipe, btn) {
   });
 }
 
-// ===== ЛОГИКА =====
 function search() {
   const text = input.value.trim();
   if (!text && currentFilter === 'all') {
@@ -329,7 +319,6 @@ function showFavorites() {
 function openShopping() { renderShoppingList(); shoppingModal.classList.add('open'); }
 function closeShoppingModal() { shoppingModal.classList.remove('open'); }
 
-// ===== 🤖 AI-ПОМОЩНИК =====
 function openAi() {
   aiModal.classList.add('open');
   setTimeout(() => aiInput.focus(), 300);
@@ -382,8 +371,65 @@ async function sendAiMessage() {
   aiSend.disabled = false;
   aiInput.focus();
 }
+function createPhotoButton() {
+  const btn = document.createElement('button');
+  btn.className = 'ai-photo-btn';
+  btn.innerHTML = '📷';
+  btn.title = 'Сфотографировать продукты';
+  btn.addEventListener('click', () => openCamera());
+  return btn;
+}
 
-// ===== СОБЫТИЯ =====
+function openCamera() {
+  const fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.accept = 'image/*';
+  fileInput.capture = 'environment';
+  
+  fileInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const div = document.createElement('div');
+      div.className = 'ai-message ai-message-user';
+      div.innerHTML = `<div class="ai-message-content"><img src="${ev.target.result}" style="max-width: 100%; border-radius: 8px;"></div>`;
+      aiMessages.appendChild(div);
+      aiMessages.scrollTop = aiMessages.scrollHeight;
+    };
+    reader.readAsDataURL(file);
+
+    const typingDiv = addAiMessage('Смотрю на фото', 'bot');
+    const typingContent = typingDiv.querySelector('.ai-message-content');
+    typingContent.classList.add('typing');
+
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const response = await fetch(WORKER_URL, {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+      typingContent.classList.remove('typing');
+
+      if (data.answer) {
+        typingContent.innerHTML = `<div style="background: rgba(76, 175, 80, 0.1); padding: 8px 12px; border-radius: 8px; margin-bottom: 8px; font-size: 13px;">📷 На фото: ${data.products ? data.products.join(', ') : 'продукты'}</div>${data.answer}`;
+      } else {
+        typingContent.textContent = '😔 Не удалось распознать: ' + (data.error || 'Не получилось');
+      }
+    } catch (err) {
+      typingContent.classList.remove('typing');
+      typingContent.textContent = '😔 Ошибка при отправке фото. Попробуй ещё раз.';
+    }
+  });
+
+  fileInput.click();
+}
+
 searchBtn.addEventListener('click', search);
 input.addEventListener('keypress', (e) => { if (e.key === 'Enter') search(); });
 
@@ -414,7 +460,6 @@ shoppingModal.addEventListener('click', (e) => {
   if (e.target === shoppingModal) closeShoppingModal();
 });
 
-// 🤖 AI события
 aiBtn.addEventListener('click', openAi);
 closeAi.addEventListener('click', closeAiModal);
 aiSend.addEventListener('click', sendAiMessage);
@@ -428,7 +473,10 @@ aiModal.addEventListener('click', (e) => {
   if (e.target === aiModal) closeAiModal();
 });
 
-// Инициализация
+const aiInputRow = document.querySelector('.ai-input-row');
+const photoBtn = createPhotoButton();
+aiInputRow.insertBefore(photoBtn, aiInputRow.firstChild);
+
 loadTheme();
 updateFavCount();
 updateShopCount();
