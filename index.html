@@ -5,45 +5,54 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Что приготовить? — Рецепты из того, что есть</title>
   
-  <!-- PWA -->
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#4a2c1a">
+  <meta name="theme-color" content="#ff6b35">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Рецепты">
   <link rel="apple-touch-icon" href="icon-192.svg">
   <link rel="icon" type="image/svg+xml" href="icon-192.svg">
   
-  <!-- Красивые шрифты -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
   <div class="container">
     <div class="header">
-      <h1>🍳 Что приготовить?</h1>
+      <div class="logo">
+        <span class="logo-emoji">🍳</span>
+        <h1>Что приготовить?</h1>
+      </div>
       <button id="themeToggle" class="theme-toggle" title="Сменить тему">🌙</button>
     </div>
-    <p class="subtitle">Введи продукты или название блюда — покажем рецепты</p>
+    
+    <p class="subtitle">✨ 200 рецептов из того, что есть дома</p>
 
     <div class="search-box">
+      <span class="search-icon">🔍</span>
       <input 
         type="text" 
         id="ingredientsInput" 
         placeholder="яйца, молоко... или борщ"
       >
-      <button id="searchBtn">🔍 Найти</button>
+      <button id="searchBtn">Найти</button>
     </div>
 
     <div class="quick-tags">
-      <span>Примеры:</span>
-      <button class="tag" data-items="яйца, молоко, мука">яйца, молоко, мука</button>
-      <button class="tag" data-items="макароны, сыр, масло">макароны, сыр</button>
-      <button class="tag" data-items="картошка, лук, масло">картошка, лук</button>
-      <button class="tag" data-items="борщ">борщ</button>
+      <span class="tags-label">Попробуй:</span>
+      <button class="tag" data-items="яйца, молоко, мука">🥚 яйца, молоко</button>
+      <button class="tag" data-items="макароны, сыр, масло">🧀 макароны, сыр</button>
+      <button class="tag" data-items="картошка, лук, масло">🥔 картошка, лук</button>
+      <button class="tag" data-items="борщ">🍲 борщ</button>
     </div>
 
     <div class="filters">
@@ -57,15 +66,23 @@
     </div>
 
     <div class="action-row">
-      <button id="randomBtn" class="random-btn">🎲 Случайный</button>
-      <button id="favoritesBtn" class="favorites-btn">❤️ Избранное (<span id="favCount">0</span>)</button>
-      <button id="shoppingBtn" class="shopping-btn">🛒 Покупки (<span id="shopCount">0</span>)</button>
+      <button id="randomBtn" class="action-btn random-btn">
+        <span>🎲</span>
+        <span>Случайный</span>
+      </button>
+      <button id="favoritesBtn" class="action-btn favorites-btn">
+        <span>❤️</span>
+        <span>Избранное (<span id="favCount">0</span>)</span>
+      </button>
+      <button id="shoppingBtn" class="action-btn shopping-btn">
+        <span>🛒</span>
+        <span>Покупки (<span id="shopCount">0</span>)</span>
+      </button>
     </div>
 
     <div id="results" class="results"></div>
   </div>
 
-  <!-- Модальное окно списка покупок -->
   <div id="shoppingModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">

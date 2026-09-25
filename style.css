@@ -1,24 +1,37 @@
-/* ===== ПЕРЕМЕННЫЕ ТЕМ ===== */
 :root {
-  --bg-gradient: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-  --card-bg: #ffffff;
-  --text-main: #333333;
-  --text-title: #4a2c1a;
-  --text-soft: #7a5c4a;
-  --accent: #4a2c1a;
-  --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  --hover-bg: #f5f5f5;
+  --bg-1: #fff5e6;
+  --bg-2: #ffe0c7;
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --card-border: rgba(255, 255, 255, 0.6);
+  --text-main: #2d1b0e;
+  --text-soft: #8b6f5c;
+  --accent: #ff6b35;
+  --accent-2: #f7931e;
+  --accent-grad: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+  --shadow: 0 8px 32px rgba(255, 107, 53, 0.12);
+  --shadow-hover: 0 12px 40px rgba(255, 107, 53, 0.2);
+  --hover-bg: rgba(255, 107, 53, 0.08);
+  --blob-1: rgba(255, 107, 53, 0.3);
+  --blob-2: rgba(247, 147, 30, 0.25);
+  --blob-3: rgba(255, 193, 7, 0.2);
 }
 
 body.dark {
-  --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  --card-bg: #1e2a47;
-  --text-main: #e0e0e0;
-  --text-title: #ffd166;
+  --bg-1: #0f0f1e;
+  --bg-2: #1a1a2e;
+  --card-bg: rgba(30, 42, 71, 0.85);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --text-main: #e8e8f0;
   --text-soft: #a0a0c0;
-  --accent: #ffd166;
-  --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-  --hover-bg: #2a3a5a;
+  --accent: #ffa94d;
+  --accent-2: #ffd166;
+  --accent-grad: linear-gradient(135deg, #ffa94d 0%, #ffd166 100%);
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --shadow-hover: 0 12px 40px rgba(255, 169, 77, 0.2);
+  --hover-bg: rgba(255, 169, 77, 0.1);
+  --blob-1: rgba(255, 169, 77, 0.15);
+  --blob-2: rgba(255, 209, 102, 0.1);
+  --blob-3: rgba(118, 75, 162, 0.15);
 }
 
 * {
@@ -28,162 +41,275 @@ body.dark {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   min-height: 100vh;
-  background: var(--bg-gradient);
+  background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
   padding: 30px 15px;
   color: var(--text-main);
-  transition: background 0.3s, color 0.3s;
+  transition: background 0.4s, color 0.3s;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ===== ЖИВОЙ ФОН ===== */
+.bg-blobs {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: float 20s ease-in-out infinite;
+}
+
+.blob-1 {
+  width: 400px;
+  height: 400px;
+  background: var(--blob-1);
+  top: -100px;
+  left: -100px;
+  animation-delay: 0s;
+}
+
+.blob-2 {
+  width: 300px;
+  height: 300px;
+  background: var(--blob-2);
+  top: 40%;
+  right: -80px;
+  animation-delay: -7s;
+}
+
+.blob-3 {
+  width: 350px;
+  height: 350px;
+  background: var(--blob-3);
+  bottom: -100px;
+  left: 30%;
+  animation-delay: -14s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(50px, -30px) scale(1.1); }
+  66% { transform: translate(-30px, 50px) scale(0.95); }
 }
 
 .container {
   max-width: 720px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
+/* ===== ШАПКА ===== */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   gap: 15px;
 }
 
-h1 {
-  font-size: 30px;
-  font-weight: 800;
-  color: var(--text-title);
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   flex: 1;
+}
+
+.logo-emoji {
+  font-size: 36px;
+  animation: wiggle 3s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+}
+
+h1 {
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--text-main);
+  letter-spacing: -0.5px;
+  line-height: 1.1;
 }
 
 .theme-toggle {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 2px solid var(--accent);
-  background: transparent;
+  border: none;
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
   font-size: 20px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s;
   flex-shrink: 0;
+  box-shadow: var(--shadow);
 }
 
 .theme-toggle:hover {
   transform: rotate(20deg) scale(1.1);
-  background: var(--accent);
+  box-shadow: var(--shadow-hover);
 }
 
 .subtitle {
   text-align: center;
   color: var(--text-soft);
   margin-bottom: 25px;
-  font-size: 15px;
+  font-size: 14px;
+  font-weight: 500;
 }
 
+/* ===== ПОИСК ===== */
 .search-box {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 8px;
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  border: 1.5px solid var(--card-border);
+  border-radius: 18px;
+  padding: 6px 6px 6px 16px;
   margin-bottom: 15px;
+  box-shadow: var(--shadow);
+  transition: all 0.3s;
+}
+
+.search-box:focus-within {
+  box-shadow: var(--shadow-hover);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.search-icon {
+  font-size: 18px;
+  opacity: 0.6;
 }
 
 #ingredientsInput {
   flex: 1;
-  padding: 14px 16px;
-  border-radius: 12px;
-  border: 2px solid var(--card-bg);
+  padding: 12px 4px;
+  border: none;
   font-size: 16px;
   outline: none;
-  background: var(--card-bg);
+  background: transparent;
   color: var(--text-main);
-  transition: border 0.2s, box-shadow 0.2s;
+  font-weight: 500;
 }
 
-#ingredientsInput:focus {
-  border-color: #fcb69f;
-  box-shadow: 0 0 0 4px rgba(252, 182, 159, 0.2);
+#ingredientsInput::placeholder {
+  color: var(--text-soft);
+  opacity: 0.7;
 }
 
 #searchBtn {
-  padding: 14px 22px;
-  border-radius: 12px;
+  padding: 12px 24px;
+  border-radius: 14px;
   border: none;
-  background: var(--accent);
-  color: var(--card-bg);
-  font-size: 16px;
+  background: var(--accent-grad);
+  color: #fff;
+  font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s;
-}
-
-body.dark #searchBtn {
-  color: #1a1a2e;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.35);
+  white-space: nowrap;
 }
 
 #searchBtn:hover {
-  transform: scale(1.03);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5);
 }
 
+#searchBtn:active {
+  transform: translateY(0);
+}
+
+/* ===== ТЕГИ ===== */
 .quick-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   align-items: center;
   margin-bottom: 15px;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-soft);
+}
+
+.tags-label {
+  font-weight: 600;
 }
 
 .tag {
-  padding: 6px 12px;
+  padding: 7px 14px;
   border-radius: 20px;
-  border: 1px solid var(--text-soft);
-  background: transparent;
-  color: var(--text-soft);
+  border: 1.5px solid var(--card-border);
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  color: var(--text-main);
   cursor: pointer;
   font-size: 13px;
-  transition: all 0.15s;
+  font-weight: 500;
+  transition: all 0.2s;
 }
 
 .tag:hover {
-  background: var(--text-soft);
-  color: var(--card-bg);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.15);
 }
 
+/* ===== ФИЛЬТРЫ ===== */
 .filters {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 15px;
+  margin-bottom: 18px;
 }
 
 .filter-btn {
-  padding: 8px 14px;
-  border-radius: 20px;
-  border: 2px solid var(--accent);
-  background: transparent;
-  color: var(--accent);
+  padding: 9px 16px;
+  border-radius: 22px;
+  border: 1.5px solid var(--card-border);
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  color: var(--text-main);
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;
-  transition: all 0.15s;
+  transition: all 0.2s;
 }
 
 .filter-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-color: var(--accent);
 }
 
 .filter-btn.active {
-  background: var(--accent);
-  color: var(--card-bg);
+  background: var(--accent-grad);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 16px rgba(255, 107, 53, 0.4);
 }
 
-body.dark .filter-btn.active {
-  color: #1a1a2e;
-}
-
+/* ===== КНОПКИ ДЕЙСТВИЙ ===== */
 .action-row {
   display: flex;
   gap: 10px;
@@ -191,186 +317,209 @@ body.dark .filter-btn.active {
   flex-wrap: wrap;
 }
 
-.random-btn, .favorites-btn, .shopping-btn {
+.action-btn {
   flex: 1;
   min-width: 130px;
-  padding: 14px;
-  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: 14px;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s;
+  border: 1.5px solid var(--card-border);
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  color: var(--text-main);
+}
+
+.action-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+}
+
+.action-btn span:first-child {
+  font-size: 18px;
 }
 
 .random-btn {
-  border: none;
-  background: linear-gradient(135deg, #764ba2, #667eea);
+  background: var(--accent-grad);
   color: #fff;
-  box-shadow: 0 4px 15px rgba(118, 75, 162, 0.3);
+  border: none;
+  box-shadow: 0 4px 16px rgba(255, 107, 53, 0.35);
 }
 
 .random-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(118, 75, 162, 0.4);
-}
-
-.favorites-btn {
-  border: 2px solid #e91e63;
-  background: transparent;
-  color: #e91e63;
+  box-shadow: 0 8px 24px rgba(255, 107, 53, 0.5);
 }
 
 .favorites-btn:hover {
-  background: #e91e63;
-  color: #fff;
-  transform: translateY(-2px);
-}
-
-.shopping-btn {
-  border: 2px solid #2196f3;
-  background: transparent;
-  color: #2196f3;
+  border-color: #e91e63;
+  color: #e91e63;
 }
 
 .shopping-btn:hover {
-  background: #2196f3;
-  color: #fff;
-  transform: translateY(-2px);
+  border-color: #2196f3;
+  color: #2196f3;
 }
 
+/* ===== РЕЗУЛЬТАТЫ ===== */
 .results {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 16px;
 }
 
-/* ===== КАРТОЧКА РЕЦЕПТА ===== */
 .recipe-card {
   background: var(--card-bg);
-  border-radius: 16px;
-  padding: 22px;
+  backdrop-filter: blur(20px);
+  border: 1.5px solid var(--card-border);
+  border-radius: 20px;
+  padding: 24px;
   box-shadow: var(--shadow);
   position: relative;
-  transition: transform 0.2s, box-shadow 0.2s;
-  animation: fadeInUp 0.4s ease-out;
-  border-left: 5px solid var(--accent);
+  transition: all 0.3s;
+  animation: cardIn 0.5s ease-out backwards;
+  overflow: hidden;
 }
 
-.recipe-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+.recipe-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: var(--accent-grad);
 }
 
-.recipe-card[data-category="завтрак"] { border-left-color: #fbc02d; }
-.recipe-card[data-category="суп"]     { border-left-color: #2196f3; }
-.recipe-card[data-category="второе"]  { border-left-color: #ff9800; }
-.recipe-card[data-category="салат"]   { border-left-color: #4caf50; }
-.recipe-card[data-category="десерт"]  { border-left-color: #e91e63; }
+.recipe-card[data-category="завтрак"]::before { background: linear-gradient(180deg, #fbc02d, #f9a825); }
+.recipe-card[data-category="суп"]::before     { background: linear-gradient(180deg, #2196f3, #1976d2); }
+.recipe-card[data-category="второе"]::before  { background: linear-gradient(180deg, #ff6b35, #f7931e); }
+.recipe-card[data-category="салат"]::before   { background: linear-gradient(180deg, #4caf50, #388e3c); }
+.recipe-card[data-category="десерт"]::before  { background: linear-gradient(180deg, #e91e63, #c2185b); }
 
-@keyframes fadeInUp {
+@keyframes cardIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(20px) scale(0.98);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
+.recipe-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+}
+
 .recipe-card h3 {
-  color: var(--text-title);
-  margin-bottom: 8px;
-  font-size: 21px;
-  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 10px;
+  font-size: 20px;
+  font-weight: 800;
   padding-right: 120px;
+  line-height: 1.3;
 }
 
 .recipe-time {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   background: var(--hover-bg);
-  color: var(--text-soft);
-  padding: 4px 12px;
+  color: var(--accent);
+  padding: 5px 12px;
   border-radius: 12px;
   font-size: 13px;
-  font-weight: 600;
-  margin-bottom: 12px;
+  font-weight: 700;
+  margin-bottom: 14px;
 }
 
 .recipe-card ol {
   padding-left: 22px;
   color: var(--text-main);
-  line-height: 1.7;
+  line-height: 1.75;
   font-size: 15px;
 }
 
 .recipe-card ol li {
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  font-weight: 400;
 }
 
 .recipe-card ol li::marker {
   color: var(--accent);
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .missing {
-  background: #fff3cd;
-  color: #856404;
+  background: rgba(255, 193, 7, 0.15);
+  color: #b8860b;
   padding: 10px 14px;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 14px;
   margin-bottom: 12px;
   font-weight: 600;
+  border-left: 3px solid #ffc107;
 }
 
 body.dark .missing {
-  background: #3a3a1a;
+  background: rgba(255, 209, 102, 0.1);
   color: #ffd166;
 }
 
 .empty {
   text-align: center;
-  padding: 50px 20px;
+  padding: 60px 20px;
   color: var(--text-soft);
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.7;
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1.5px solid var(--card-border);
 }
 
 .match-badge {
   position: absolute;
-  top: 22px;
-  right: 22px;
-  background: #4caf50;
+  top: 24px;
+  right: 24px;
+  background: var(--accent-grad);
   color: #fff;
   padding: 5px 12px;
   border-radius: 12px;
   font-size: 12px;
   font-weight: 700;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
 }
 
 .card-actions {
   display: flex;
   gap: 8px;
-  margin-top: 15px;
+  margin-top: 16px;
   flex-wrap: wrap;
 }
 
 .copy-btn, .fav-btn, .shop-btn {
   padding: 9px 14px;
   border-radius: 10px;
-  border: 1.5px solid var(--accent);
+  border: 1.5px solid var(--card-border);
   background: transparent;
-  color: var(--accent);
+  color: var(--text-main);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.2s;
 }
 
 .copy-btn:hover, .fav-btn:hover {
-  background: var(--accent);
-  color: var(--card-bg);
-  transform: translateY(-1px);
+  background: var(--hover-bg);
+  transform: translateY(-2px);
 }
 
 .copy-btn.copied {
@@ -380,29 +529,25 @@ body.dark .missing {
 }
 
 .fav-btn {
-  border-color: #e91e63;
+  border-color: rgba(233, 30, 99, 0.4);
   color: #e91e63;
 }
 
-.fav-btn:hover {
-  background: #e91e63;
-  color: #fff;
-}
-
-.fav-btn.active {
+.fav-btn:hover, .fav-btn.active {
   background: #e91e63;
   color: #fff;
   border-color: #e91e63;
 }
 
 .shop-btn {
-  border-color: #2196f3;
+  border-color: rgba(33, 150, 243, 0.4);
   color: #2196f3;
 }
 
 .shop-btn:hover {
   background: #2196f3;
   color: #fff;
+  border-color: #2196f3;
 }
 
 /* ===== МОДАЛЬНОЕ ОКНО ===== */
@@ -414,11 +559,12 @@ body.dark .missing {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
   z-index: 1000;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  animation: fadeIn 0.2s;
+  animation: fadeIn 0.25s;
 }
 
 @keyframes fadeIn {
@@ -432,24 +578,26 @@ body.dark .missing {
 
 .modal-content {
   background: var(--card-bg);
-  border-radius: 20px;
-  padding: 25px;
+  backdrop-filter: blur(30px);
+  border: 1.5px solid var(--card-border);
+  border-radius: 24px;
+  padding: 28px;
   max-width: 480px;
   width: 100%;
   max-height: 80vh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-  animation: slideUp 0.3s ease-out;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+  animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(40px) scale(0.95);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -461,9 +609,9 @@ body.dark .missing {
 }
 
 .modal-header h2 {
-  color: var(--text-title);
+  color: var(--text-main);
   font-size: 22px;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .close-btn {
@@ -472,12 +620,14 @@ body.dark .missing {
   font-size: 24px;
   cursor: pointer;
   color: var(--text-soft);
-  padding: 0 8px;
-  transition: color 0.15s;
+  padding: 4px 10px;
+  border-radius: 8px;
+  transition: all 0.2s;
 }
 
 .close-btn:hover {
-  color: var(--text-title);
+  color: var(--text-main);
+  background: var(--hover-bg);
 }
 
 .shopping-list {
@@ -489,16 +639,18 @@ body.dark .missing {
 .shopping-item {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   padding: 12px 14px;
   background: var(--hover-bg);
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.2s;
+  border: 1.5px solid transparent;
 }
 
 .shopping-item:hover {
-  transform: translateX(3px);
+  border-color: var(--accent);
+  transform: translateX(4px);
 }
 
 .shopping-item.done {
@@ -517,7 +669,7 @@ body.dark .missing {
   flex: 1;
   font-size: 15px;
   color: var(--text-main);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .shopping-item .remove-item {
@@ -526,26 +678,26 @@ body.dark .missing {
   color: #e91e63;
   font-size: 18px;
   cursor: pointer;
-  padding: 0 4px;
-  transition: transform 0.15s;
+  padding: 0 6px;
+  transition: transform 0.2s;
 }
 
 .shopping-item .remove-item:hover {
-  transform: scale(1.3);
+  transform: scale(1.4);
 }
 
 .clear-btn {
   margin-top: 20px;
   width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  border: 1.5px solid #e91e63;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(233, 30, 99, 0.4);
   background: transparent;
   color: #e91e63;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.2s;
 }
 
 .clear-btn:hover {
@@ -556,18 +708,34 @@ body.dark .missing {
 /* ===== АДАПТИВНОСТЬ ===== */
 @media (max-width: 480px) {
   h1 {
-    font-size: 24px;
+    font-size: 20px;
+  }
+  
+  .logo-emoji {
+    font-size: 28px;
   }
   
   .search-box {
     flex-direction: column;
+    padding: 12px;
+    gap: 10px;
+  }
+  
+  .search-icon {
+    display: none;
+  }
+  
+  #ingredientsInput {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
   }
   
   #searchBtn {
     width: 100%;
   }
   
-  .random-btn, .favorites-btn, .shopping-btn {
+  .action-btn {
     min-width: 100%;
     flex: none;
   }
@@ -578,14 +746,13 @@ body.dark .missing {
   }
   
   .match-badge {
-    top: 15px;
-    right: 15px;
+    top: 18px;
+    right: 18px;
     font-size: 11px;
-    padding: 3px 8px;
+    padding: 4px 10px;
   }
   
-  .card-actions button {
-    flex: 1;
-    min-width: 120px;
+  .recipe-card {
+    padding: 20px;
   }
 }
