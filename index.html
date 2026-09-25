@@ -83,6 +83,42 @@
     <div id="results" class="results"></div>
   </div>
 
+  <!-- 🤖 Кнопка AI-помощника -->
+  <button id="aiBtn" class="ai-fab" title="Спросить AI">🤖</button>
+
+  <!-- 🤖 Модальное окно AI-чата -->
+  <div id="aiModal" class="ai-modal">
+    <div class="ai-modal-content">
+      <div class="ai-modal-header">
+        <div class="ai-title">
+          <span class="ai-avatar">🤖</span>
+          <div>
+            <h3>AI-помощник</h3>
+            <p class="ai-status">Спроси что угодно про готовку</p>
+          </div>
+        </div>
+        <button id="closeAi" class="close-btn">✕</button>
+      </div>
+      
+      <div id="aiMessages" class="ai-messages">
+        <div class="ai-message ai-message-bot">
+          <div class="ai-message-content">Привет! 👋 Я твой кулинарный помощник.<br><br>Спроси меня что-нибудь, например:<br>• «Что приготовить из яиц и сыра?»<br>• «Дай рецепт борща»<br>• «Чем заменить молоко?»</div>
+        </div>
+      </div>
+      
+      <div class="ai-input-row">
+        <input 
+          type="text" 
+          id="aiInput" 
+          placeholder="Спроси что-нибудь..."
+          autocomplete="off"
+        >
+        <button id="aiSend" class="ai-send-btn">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно списка покупок -->
   <div id="shoppingModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
